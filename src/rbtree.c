@@ -7,7 +7,7 @@ rbtree *new_rbtree(void) {
     // TODO: initialize struct if needed
     node_t *nil = (node_t *) calloc(1, sizeof(node_t));
     nil->color = RBTREE_BLACK;
-    tree->root = tree->nil;
+    tree->root = tree->nil = nil;
     return tree;
 }
 
