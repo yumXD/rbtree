@@ -8,6 +8,8 @@ void right_rotate(rbtree *tree, node_t *node);
 
 void rb_insert_fixup(rbtree *tree, node_t *node);
 
+node_t *tree_minimum(const rbtree *t, node_t *node);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -161,6 +163,14 @@ node_t *rbtree_min(const rbtree *t) {
 node_t *rbtree_max(const rbtree *t) {
     // TODO: implement find
     return t->root;
+}
+
+node_t *tree_minimum(const rbtree *t, node_t *node) {
+    node_t *current = node;
+    while (current->left != t->nil) {
+        current = current->left;
+    }
+    return current;
 }
 
 int rbtree_erase(rbtree *t, node_t *p) {
