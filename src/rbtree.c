@@ -2,6 +2,12 @@
 
 #include <stdlib.h>
 
+void left_rotate(rbtree *tree, node_t *node);
+
+void right_rotate(rbtree *tree, node_t *node);
+
+void rb_insert_fixup(rbtree *tree, node_t *node);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -14,6 +20,36 @@ rbtree *new_rbtree(void) {
 void delete_rbtree(rbtree *t) {
     // TODO: reclaim the tree nodes's memory
     free(t);
+}
+
+void left_rotate(rbtree *tree, node_t *node) {
+    node_t *right_child = node->right;
+    node->right = right_child->left;
+
+    if (right_child->left != tree->nil) {
+        right_child->left->parent = node;
+    }
+
+    right_child->parent = node->parent;
+
+    if (node->parent == tree->nil) {
+        tree->root = right_child;
+    } else if (node == node->parent->left) {
+        node->parent->left = right_child;
+    } else {
+        node->parent->right = right_child;
+    }
+
+    right_child->left = node;
+    node->parent = right_child;
+}
+
+void right_rotate(rbtree *tree, node_t *node) {
+    
+}
+
+void rb_insert_fixup(rbtree *tree, node_t *node){
+    
 }
 
 node_t *rbtree_insert(rbtree *t, const key_t key) {
@@ -42,6 +78,8 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
         parent->left = new_node;
     else
         parent->right = new_node;
+
+    rb_insert_fixup(t, new_node);
 
     return new_node;
 }
