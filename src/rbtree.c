@@ -12,6 +12,8 @@ node_t *tree_minimum(const rbtree *t, node_t *node);
 
 void rb_transplant(rbtree *t, node_t *u, node_t *v);
 
+void rb_delete_fixup(rbtree *tree, node_t *node);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -186,8 +188,45 @@ void rb_transplant(rbtree *t, node_t *u, node_t *v) {
     v->parent = u->parent;
 }
 
-int rbtree_erase(rbtree *t, node_t *p) {
+void rb_delete_fixup(rbtree *tree, node_t *node) {
+
+}
+
+int rbtree_erase(rbtree *t, node_t *delete_node) {
     // TODO: implement erase
+
+    node_t *successor = delete_node;
+    key_t replacement_original_color = successor->color;
+    node_t *replacement;
+
+    if (delete_node->left == t->nil) {
+        replacement = delete_node->right;
+        rb_transplant(t, delete_node, delete_node->right);
+    } else if (delete_node->right == t->nil) {
+        replacement = delete_node->left;
+        rb_transplant(t, delete_node, delete_node->left);
+    } else {
+        successor = tree_minimum(t, delete_node->right);
+        replacement_original_color = successor->color;
+        replacement = successor->right;
+        if (successor->parent == delete_node) {
+            replacement->parent = successor;
+        } else {
+            rb_transplant(t, successor, successor->right);
+            successor->right = delete_node->right;
+            successor->right->parent = successor;
+        }
+        rb_transplant(t, delete_node, successor);
+        successor->left = delete_node->left;
+        successor->left->parent = successor;
+        successor->color = delete_node->color;
+    }
+
+    free(delete_node);
+
+    if (replacement_original_color == RBTREE_BLACK) {
+        rb_delete_fixup(t, replacement);
+    }
     return 0;
 }
 
