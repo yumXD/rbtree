@@ -247,7 +247,7 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
     // TODO: implement erase
 
     node_t *successor = delete_node;
-    key_t replacement_original_color = successor->color;
+    color_t replacement_original_color = successor->color;
     node_t *replacement;
 
     if (delete_node->left == t->nil) {
