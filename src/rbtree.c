@@ -10,6 +10,8 @@ void rb_insert_fixup(rbtree *tree, node_t *node);
 
 node_t *tree_minimum(const rbtree *t, node_t *node);
 
+void rb_transplant(rbtree *t, node_t *u, node_t *v);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -171,6 +173,17 @@ node_t *tree_minimum(const rbtree *t, node_t *node) {
         current = current->left;
     }
     return current;
+}
+
+void rb_transplant(rbtree *t, node_t *u, node_t *v) {
+    if (u->parent == t->nil) {
+        t->root = v;
+    } else if (u == u->parent->left) {
+        u->parent->left = v;
+    } else {
+        u->parent->right = v;
+    }
+    v->parent = u->parent;
 }
 
 int rbtree_erase(rbtree *t, node_t *p) {
