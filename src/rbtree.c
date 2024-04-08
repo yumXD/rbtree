@@ -45,11 +45,28 @@ void left_rotate(rbtree *tree, node_t *node) {
 }
 
 void right_rotate(rbtree *tree, node_t *node) {
-    
+    node_t *left_child = node->left;
+    node->left = left_child->right;
+
+    if (left_child->right != tree->nil) {
+        left_child->right->parent = node;
+    }
+
+    left_child->parent = node->parent;
+
+    if (node->parent == tree->nil) {
+        tree->root = left_child;
+    } else if (node == node->parent->right) {
+        node->parent->right = left_child;
+    } else {
+        node->parent->left = left_child;
+    }
+    left_child->right = node;
+    node->parent = left_child;
 }
 
-void rb_insert_fixup(rbtree *tree, node_t *node){
-    
+void rb_insert_fixup(rbtree *tree, node_t *node) {
+
 }
 
 node_t *rbtree_insert(rbtree *t, const key_t key) {
