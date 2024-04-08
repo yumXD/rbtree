@@ -12,7 +12,7 @@ node_t *tree_minimum(const rbtree *t, node_t *node);
 
 void rb_transplant(rbtree *t, node_t *u, node_t *v);
 
-void rb_delete_fixup(rbtree *tree, node_t *node);
+void rb_erase_fixup(rbtree *tree, node_t *node);
 
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
@@ -188,7 +188,7 @@ void rb_transplant(rbtree *t, node_t *u, node_t *v) {
     v->parent = u->parent;
 }
 
-void rb_delete_fixup(rbtree *tree, node_t *replacement) {
+void rb_erase_fixup(rbtree *tree, node_t *replacement) {
     while (replacement != tree->root && replacement->color == RBTREE_BLACK) {
         if (replacement == replacement->parent->left) {
             node_t *sibling = replacement->parent->right;
@@ -276,7 +276,7 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
     free(delete_node);
 
     if (replacement_original_color == RBTREE_BLACK) {
-        rb_delete_fixup(t, replacement);
+        rb_erase_fixup(t, replacement);
     }
     return 0;
 }
