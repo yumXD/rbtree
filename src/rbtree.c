@@ -66,7 +66,44 @@ void right_rotate(rbtree *tree, node_t *node) {
 }
 
 void rb_insert_fixup(rbtree *tree, node_t *node) {
+    while (tree->root != node && node->parent->color == RBTREE_RED) {
+        if (node->parent == node->parent->parent->left) {
+            node_t *uncle = node->parent->parent->right;
+            if (uncle->color == RBTREE_RED) {
+                uncle->color = RBTREE_BLACK;
+                node->parent->color = RBTREE_BLACK;
 
+                node->parent->parent->color = RBTREE_RED;
+                node = node->parent->parent;
+            } else {
+                if (node == node->parent->right) {
+                    node = node->parent;
+                    left_rotate(tree, node);
+                }
+                node->parent->color = RBTREE_BLACK;
+                node->parent->parent->color = RBTREE_RED;
+                right_rotate(tree, node->parent->parent);
+            }
+        } else {
+            node_t *uncle = node->parent->parent->left;
+            if (uncle->color == RBTREE_RED) {
+                uncle->color = RBTREE_BLACK;
+                node->parent->color = RBTREE_BLACK;
+
+                node->parent->parent->color = RBTREE_RED;
+                node = node->parent->parent;
+            } else {
+                if (node == node->parent->left) {
+                    node = node->parent;
+                    right_rotate(tree, node);
+                }
+                node->parent->color = RBTREE_BLACK;
+                node->parent->parent->color = RBTREE_RED;
+                left_rotate(tree, node->parent->parent);
+            }
+        }
+    }
+    tree->root->color = RBTREE_BLACK;
 }
 
 node_t *rbtree_insert(rbtree *t, const key_t key) {
