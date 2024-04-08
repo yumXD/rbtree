@@ -188,8 +188,59 @@ void rb_transplant(rbtree *t, node_t *u, node_t *v) {
     v->parent = u->parent;
 }
 
-void rb_delete_fixup(rbtree *tree, node_t *node) {
-
+void rb_delete_fixup(rbtree *tree, node_t *replacement) {
+    while (replacement != tree->root && replacement->color == RBTREE_BLACK) {
+        if (replacement == replacement->parent->left) {
+            node_t *sibling = replacement->parent->right;
+            if (sibling->color == RBTREE_RED) {
+                sibling->color = RBTREE_BLACK;
+                replacement->parent->color = RBTREE_RED;
+                left_rotate(tree, replacement->parent);
+                sibling = replacement->parent->right;
+            }
+            if (sibling->left->color == RBTREE_BLACK && sibling->right->color == RBTREE_BLACK) {
+                sibling->color = RBTREE_RED;
+                replacement = replacement->parent;
+            } else {
+                if (sibling->right->color == RBTREE_BLACK) {
+                    sibling->left->color = RBTREE_BLACK;
+                    sibling->color = RBTREE_RED;
+                    right_rotate(tree, sibling);
+                    sibling = replacement->parent->right;
+                }
+                sibling->color = replacement->parent->color;
+                replacement->parent->color = RBTREE_BLACK;
+                sibling->right->color = RBTREE_BLACK;
+                left_rotate(tree, replacement->parent);
+                replacement = tree->root;
+            }
+        } else {
+            node_t *sibling = replacement->parent->left;
+            if (sibling->color == RBTREE_RED) {
+                sibling->color = RBTREE_BLACK;
+                replacement->parent->color = RBTREE_RED;
+                right_rotate(tree, replacement->parent);
+                sibling = replacement->parent->left;
+            }
+            if (sibling->right->color == RBTREE_BLACK && sibling->left->color == RBTREE_BLACK) {
+                sibling->color = RBTREE_RED;
+                replacement = replacement->parent;
+            } else {
+                if (sibling->left->color == RBTREE_BLACK) {
+                    sibling->right->color = RBTREE_BLACK;
+                    sibling->color = RBTREE_RED;
+                    left_rotate(tree, sibling);
+                    sibling = replacement->parent->left;
+                }
+                sibling->color = replacement->parent->color;
+                replacement->parent->color = RBTREE_BLACK;
+                sibling->left->color = RBTREE_BLACK;
+                right_rotate(tree, replacement->parent);
+                replacement = tree->root;
+            }
+        }
+    }
+    replacement->color = RBTREE_BLACK;
 }
 
 int rbtree_erase(rbtree *t, node_t *delete_node) {
