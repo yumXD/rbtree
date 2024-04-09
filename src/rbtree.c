@@ -14,6 +14,8 @@ void rb_transplant(rbtree *t, node_t *u, node_t *v);
 
 void rb_erase_fixup(rbtree *tree, node_t *node);
 
+int in_order_tree_walk(const rbtree *t, node_t *root, key_t *arr, int i);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -287,6 +289,16 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
         rb_erase_fixup(t, replacement);
     }
     return 0;
+}
+
+int in_order_tree_walk(const rbtree *t, node_t *root, key_t *arr, int i) {
+    if (root != t->nil) {
+        i = in_order_tree_walk(t, root->left, arr, i);
+        arr[i] = root->key;
+        i += 1;
+        i = in_order_tree_walk(t, root->right, arr, i);
+    }
+    return i;
 }
 
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
