@@ -303,5 +303,8 @@ int in_order_tree_walk(const rbtree *t, node_t *root, key_t *arr, int i) {
 
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
     // TODO: implement to_array
+    if (t->root != t->nil) {
+        in_order_tree_walk(t, t->root, arr, 0);
+    }
     return 0;
 }
