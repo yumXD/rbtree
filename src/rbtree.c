@@ -16,6 +16,8 @@ void rb_erase_fixup(rbtree *tree, node_t *node);
 
 int in_order_tree_walk(const rbtree *t, node_t *root, key_t *arr, int i);
 
+void post_order_delete_rbtree(rbtree *t, node_t *root);
+
 rbtree *new_rbtree(void) {
     rbtree *tree = (rbtree *) calloc(1, sizeof(rbtree));
     // TODO: initialize struct if needed
@@ -25,8 +27,18 @@ rbtree *new_rbtree(void) {
     return tree;
 }
 
+void post_order_delete_rbtree(rbtree *t, node_t *root) {
+    if (root != t->nil) {
+        post_order_delete_rbtree(t, root->left);
+        post_order_delete_rbtree(t, root->right);
+        free(root);
+    }
+}
+
 void delete_rbtree(rbtree *t) {
     // TODO: reclaim the tree nodes's memory
+    post_order_delete_rbtree(t, t->root);
+    free(t->nil);
     free(t);
 }
 
