@@ -170,7 +170,11 @@ node_t *rbtree_min(const rbtree *t) {
 
 node_t *rbtree_max(const rbtree *t) {
     // TODO: implement find
-    return t->root;
+    node_t *current = t->root;
+    while (current->right != t->nil) {
+        current = current->right;
+    }
+    return current;
 }
 
 node_t *tree_minimum(const rbtree *t, node_t *node) {
