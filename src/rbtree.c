@@ -269,7 +269,7 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
     // TODO: implement erase
 
     node_t *successor = delete_node;
-    color_t replacement_original_color = successor->color;
+    color_t successor_original_color = successor->color;
     node_t *replacement;
 
     if (delete_node->left == t->nil) {
@@ -280,7 +280,7 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
         rb_transplant(t, delete_node, delete_node->left);
     } else {
         successor = tree_minimum(t, delete_node->right);
-        replacement_original_color = successor->color;
+        successor_original_color = successor->color;
         replacement = successor->right;
         if (successor->parent == delete_node) {
             replacement->parent = successor;
@@ -297,7 +297,7 @@ int rbtree_erase(rbtree *t, node_t *delete_node) {
 
     free(delete_node);
 
-    if (replacement_original_color == RBTREE_BLACK) {
+    if (successor_original_color == RBTREE_BLACK) {
         rb_erase_fixup(t, replacement);
     }
     return 0;
